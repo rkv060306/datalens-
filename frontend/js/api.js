@@ -127,6 +127,14 @@ class APIClient {
   }
 
   static async request(endpoint, options = {}) {
+    const isGitHubPages = window.location.hostname.includes("github.io");
+    const hasCustomBackend = Boolean(localStorage.getItem("datalens_backend_url"));
+
+    // On static GitHub Pages without custom backend, route directly to Client-Side Engine to avoid HTTP 405
+    if (isGitHubPages && !hasCustomBackend) {
+      return APIClient.handleClientSideFallback(endpoint, options);
+    }
+
     const apiBase = getApiBase();
     const token = await this.ensureToken();
 
@@ -161,15 +169,25 @@ class APIClient {
           return await retryRes.json();
         }
       }
-      throw new Error(`HTTP ${response.status}`);
+      return APIClient.handleClientSideFallback(endpoint, options);
     } catch (error) {
-      // Client-Side GitHub Pages Fallback Handler
       return APIClient.handleClientSideFallback(endpoint, options);
     }
   }
 
   static async handleClientSideFallback(endpoint, options) {
     console.log(`[DataLens Engine] Serving request via Client-Side Analytics Engine: ${endpoint}`);
+
+    if (endpoint === "/api/datasets/samples" || endpoint.includes("/api/datasets/samples?")) {
+      return [
+        { fileName: "sales.csv", displayName: "Sales Performance Data.csv" },
+        { fileName: "employees.csv", displayName: "Employee HR Records.csv" }
+      ];
+    }
+
+    if (endpoint.includes("/api/datasets/samples/load") || endpoint.includes("/api/datasets/upload")) {
+      return GITHUB_PAGES_MOCK_DATASETS[0];
+    }
 
     if (endpoint === "/api/datasets" || endpoint.includes("/api/datasets?")) {
       return GITHUB_PAGES_MOCK_DATASETS;
@@ -187,8 +205,13 @@ class APIClient {
       return GITHUB_PAGES_MOCK_CHARTS;
     }
 
-    if (endpoint === "/api/chatbot/query" && options.body) {
-      const reqBody = typeof options.body === "string" ? JSON.parse(options.body) : options.body;
+    if (endpoint === "/api/chatbot/query") {
+      let reqBody = {};
+      try {
+        reqBody = typeof options.body === "string" ? JSON.parse(options.body) : (options.body || {});
+      } catch (e) {
+        reqBody = {};
+      }
       return APIClient.handleClientSideChatbotQuery(reqBody);
     }
 
@@ -196,7 +219,6 @@ class APIClient {
       return { downloadUrl: "#", message: "Report generated successfully." };
     }
 
-    // Default safe response
     return GITHUB_PAGES_MOCK_DATASETS;
   }
 
