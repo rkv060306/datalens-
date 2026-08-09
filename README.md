@@ -1,7 +1,7 @@
  DataLens — Universal Online Data Analytics Platform
 
 DataLens is a full-stack, open-source online data analytics platform. It allows users to upload structured datasets (CSV, Excel) and media files (Images, Videos), and automatically profiles, cleans, analyzes, visualizes, and generates calculated statistical insights and downloadable PDF reports — **100% free with zero mandatory registration or login required**.
-
+"link":https://rkv060306.github.io/datalens-/
 ---
 
 ## 🌟 Key Features
