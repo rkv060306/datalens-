@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Data Chatbot & Assistant — DataLens</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="brand-logo">🔍 DataLens</a>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="index.html"><span>📊</span> Overview & Dashboard</a></li>
+        <li><a href="upload.html"><span>📁</span> Upload Dataset</a></li>
+        <li><a href="dataset.html"><span>📋</span> Spreadsheet Preview</a></li>
+        <li><a href="visualization.html"><span>📈</span> Chart Builder</a></li>
+        <li><a href="insights.html"><span>💡</span> AI Insights & ML</a></li>
+        <li><a href="chatbot.html" class="active"><span>💬</span> AI Data Chatbot</a></li>
+        <li><a href="reports.html"><span>📄</span> Reports & Export</a></li>
+        <li><a href="history.html"><span>🕒</span> Dataset History</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="user-badge">
+          <span id="user-name-badge">Guest Analyst</span>
+          <span style="font-size:10px; background:var(--accent-secondary); color:#000; padding:2px 6px; border-radius:4px;">FREE</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="top-header">
+        <div class="header-title"><h2>🤖 AI Data Analyst Assistant</h2></div>
+        <div class="header-actions">
+          <select id="active-dataset-select" class="form-control" style="width:240px;"></select>
+          <button id="btn-clear-chat" class="btn btn-secondary btn-sm">🗑️ Clear Chat</button>
+        </div>
+      </header>
+
+      <main class="content-body">
+        <div class="chatbot-layout">
+          <!-- Left Panel: AI Model Provider & Free API Key Settings -->
+          <div class="chatbot-config-panel">
+            <h3 style="font-size:16px; font-weight:700;">⚡ AI Provider & API Model</h3>
+            
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:12px; font-weight:700;">Select AI Provider:</label>
+              <select id="ai-provider-select" class="form-control">
+                <option value="builtin">🤖 DataLens Built-in Engine (100% Free • Offline)</option>
+                <option value="gemini">✨ Google Gemini API (Free Key)</option>
+                <option value="groq">🚀 Groq Llama 3.3 (Free Key • Superfast)</option>
+                <option value="openrouter">🌐 OpenRouter Free Models</option>
+                <option value="huggingface">📑 HuggingFace Inference API</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:12px; font-weight:700;">Target LLM Model:</label>
+              <select id="ai-model-select" class="form-control"></select>
+            </div>
+
+            <div class="form-group" style="margin:0;">
+              <label style="font-size:12px; font-weight:700;">API Key (Saved locally in browser):</label>
+              <input type="password" id="ai-api-key-input" class="form-control" placeholder="Paste your API key here...">
+              <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">
+                Don't have a key? Get a free API key from <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:var(--accent-primary);">Google AI Studio</a> or <a href="https://console.groq.com/keys" target="_blank" style="color:var(--accent-primary);">Groq Console</a>.
+              </p>
+            </div>
+
+            <button id="btn-save-api-key" class="btn btn-primary btn-sm" style="width:100%;">💾 Save API Key</button>
+
+            <hr style="border:0; border-top:1px solid var(--border-color); margin:4px 0;">
+
+            <div style="background:var(--bg-dark); padding:12px; border-radius:var(--radius-md); font-size:12px; color:var(--text-muted);">
+              <strong>🔒 Privacy Guaranteed:</strong> Your API keys are stored only in your browser's local storage and used directly to query the chosen AI models.
+            </div>
+          </div>
+
+          <!-- Right Main Area: Chat Messages & Input -->
+          <div class="chatbot-main-area">
+            <div class="chat-header">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span style="font-size:20px;">💬</span>
+                <div>
+                  <h4 style="font-size:15px; font-weight:700;">Interactive Dataset Conversation</h4>
+                  <span style="font-size:12px; color:var(--text-muted);">Ask questions about data quality, correlations, statistical distributions, or ML strategies</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="main-chat-messages" class="chat-messages-container"></div>
+
+            <div id="main-chat-chips" class="prompt-chips-container"></div>
+
+            <div class="chat-input-wrapper">
+              <textarea id="main-chat-input" class="chat-input" rows="2" placeholder="Type a message or click a suggestion prompt... (e.g. 'Summarize dataset')"></textarea>
+              <button id="main-chat-send" class="chat-send-btn">Send ➔</button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      let datasetId = APIClient.getActiveDatasetId();
+      const datasetSelect = document.getElementById("active-dataset-select");
+
+      try {
+        const userDatasets = await APIClient.request("/api/datasets");
+        if (datasetSelect && userDatasets.length > 0) {
+          datasetSelect.innerHTML = "";
+          userDatasets.forEach(ds => {
+            const opt = document.createElement("option");
+            opt.value = ds.id;
+            opt.textContent = `${ds.name} (${ds.rows} rows, ${ds.columns} cols)`;
+            if (ds.id === datasetId) opt.selected = true;
+            datasetSelect.appendChild(opt);
+          });
+          datasetSelect.addEventListener("change", (e) => {
+            APIClient.setActiveDatasetId(e.target.value);
+            window.location.reload();
+          });
+        }
+      } catch (e) {
+        console.error("Error setting dataset selector", e);
+      }
+    });
+  </script>
+</body>
+</html>

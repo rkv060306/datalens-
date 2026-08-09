@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualization Builder — DataLens</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/visualization.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="js/theme.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="brand-logo">🔍 DataLens</a>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="index.html"><span>📊</span> Overview & Dashboard</a></li>
+        <li><a href="upload.html"><span>📁</span> Upload Dataset</a></li>
+        <li><a href="dataset.html"><span>📋</span> Spreadsheet Preview</a></li>
+        <li><a href="visualization.html" class="active"><span>📈</span> Chart Builder</a></li>
+        <li><a href="insights.html"><span>💡</span> AI Insights & ML</a></li>
+        <li><a href="chatbot.html"><span>💬</span> AI Data Chatbot</a></li>
+        <li><a href="reports.html"><span>📄</span> Reports & Export</a></li>
+        <li><a href="history.html"><span>🕒</span> Dataset History</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="user-badge">
+          <span id="user-name-badge">Guest Analyst</span>
+          <span style="font-size:10px; background:var(--accent-secondary); color:#000; padding:2px 6px; border-radius:4px;">FREE</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="top-header">
+        <div class="header-title"><h2>Interactive Visualization Builder</h2></div>
+        <div class="header-actions">
+          <a href="dashboard.html" class="btn btn-secondary btn-sm">⬅ Dashboard</a>
+        </div>
+      </header>
+
+      <main class="content-body">
+        <!-- Interactive Chart Builder Section -->
+        <div class="card" style="margin-bottom:30px;">
+          <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">🎨 Custom Chart Builder</h3>
+          <div class="chart-builder-panel">
+            <div class="builder-controls">
+              <div class="form-group">
+                <label>Chart Type:</label>
+                <select id="builder-chart-type" class="form-control">
+                  <option value="bar">Bar Chart</option>
+                  <option value="line">Line Chart</option>
+                  <option value="scatter">Scatter Plot</option>
+                  <option value="histogram">Histogram</option>
+                  <option value="box">Box Plot</option>
+                  <option value="pie">Pie / Donut Chart</option>
+                  <option value="area">Area Chart</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>X Axis Column:</label>
+                <select id="builder-x-axis" class="form-control"></select>
+              </div>
+
+              <div class="form-group">
+                <label>Y Axis Column:</label>
+                <select id="builder-y-axis" class="form-control"></select>
+              </div>
+
+              <div class="form-group">
+                <label>Aggregation Method:</label>
+                <select id="builder-aggregation" class="form-control">
+                  <option value="none">None (Raw Points)</option>
+                  <option value="mean">Mean (Average)</option>
+                  <option value="sum">Sum</option>
+                  <option value="count">Count</option>
+                  <option value="min">Minimum</option>
+                  <option value="max">Maximum</option>
+                </select>
+              </div>
+
+              <button id="btn-generate-custom-chart" class="btn btn-primary">⚡ Update Chart Canvas</button>
+            </div>
+
+            <div class="plotly-canvas-wrapper">
+              <div id="custom-chart-canvas" style="width:100%; height:440px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Automatic Chart Recommendations Grid -->
+        <div class="card">
+          <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">🤖 Automatic Recommended Charts</h3>
+          <div id="recommended-charts-container" class="chart-grid-container">
+            <p style="color:var(--text-muted)">Loading auto chart recommendations...</p>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/visualization.js"></script>
+  <script src="js/chatbot.js"></script>
+</body>
+</html>

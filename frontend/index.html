@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataLens — Universal Online Data Analytics Platform</title>
+  <meta name="description" content="Turn raw CSV, Excel, Image, and Video data into clear interactive dashboards, statistical insights, ML predictions, and downloadable PDF reports.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/upload.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/visualization.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="js/theme.js"></script>
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="brand-logo">
+          <span>🔍 DataLens</span>
+        </a>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="index.html" class="active"><span>📊</span> Overview & Dashboard</a></li>
+        <li><a href="upload.html"><span>📁</span> Upload Dataset</a></li>
+        <li><a href="dataset.html"><span>📋</span> Spreadsheet Preview</a></li>
+        <li><a href="visualization.html"><span>📈</span> Chart Builder</a></li>
+        <li><a href="insights.html"><span>💡</span> AI Insights & ML</a></li>
+        <li><a href="chatbot.html"><span>💬</span> AI Data Chatbot</a></li>
+        <li><a href="reports.html"><span>📄</span> Reports & Export</a></li>
+        <li><a href="history.html"><span>🕒</span> Dataset History</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="user-badge">
+          <span id="user-name-badge">Guest Analyst</span>
+          <span style="font-size:10px; background:var(--accent-secondary); color:#000; padding:2px 6px; border-radius:4px;">FREE</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Top Navbar -->
+      <header class="top-header">
+        <div class="header-title">
+          <h2>DataLens Universal Analytics</h2>
+        </div>
+        <div class="header-actions">
+          <select id="active-dataset-select" class="form-control" style="width:240px;"></select>
+          <a href="upload.html" class="btn btn-primary btn-sm">➕ Upload Data</a>
+          <button id="quick-pdf-btn" onclick="quickGeneratePdf()" class="btn btn-success btn-sm">📄 Download Report</button>
+        </div>
+      </header>
+
+      <!-- Main Body -->
+      <main class="content-body">
+        <!-- Hero & Quick Upload Banner -->
+        <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(15, 23, 42, 0.95)); border-color: var(--accent-primary);">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+            <div>
+              <span style="font-size:12px; font-weight:700; color:var(--accent-secondary); text-transform:uppercase; letter-spacing:1px;">Open Source & 100% Free • No Login Required</span>
+              <h1 style="font-size:26px; font-weight:800; margin-top:4px;">Turn Raw Data Into Clear Actionable Insights</h1>
+              <p style="color:var(--text-muted); font-size:14px; margin-top:4px;">Upload CSV, Excel, Images, or Videos to instantly explore data quality, statistical trends, Plotly charts, and AI insights.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <a href="upload.html" class="btn btn-primary">📁 Drop File Here</a>
+              <a href="chatbot.html" class="btn btn-secondary">💬 Chat with DataLens AI</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard KPI Cards -->
+        <div class="grid-cols-4" style="margin-bottom: 24px;">
+          <div class="card kpi-card">
+            <div class="kpi-icon">📊</div>
+            <div class="kpi-info">
+              <h4>Total Rows</h4>
+              <div class="kpi-value" id="kpi-rows">0</div>
+            </div>
+          </div>
+          <div class="card kpi-card">
+            <div class="kpi-icon">📐</div>
+            <div class="kpi-info">
+              <h4>Total Columns</h4>
+              <div class="kpi-value" id="kpi-cols">0</div>
+            </div>
+          </div>
+          <div class="card kpi-card">
+            <div class="kpi-icon">⚠️</div>
+            <div class="kpi-info">
+              <h4>Missing Cells</h4>
+              <div class="kpi-value" id="kpi-missing">0%</div>
+            </div>
+          </div>
+          <div class="card kpi-card">
+            <div class="kpi-icon">💾</div>
+            <div class="kpi-info">
+              <h4>Memory Footprint</h4>
+              <div class="kpi-value" id="kpi-memory">0 MB</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dashboard Grid: Quality Score & Key Insights -->
+        <div class="dashboard-grid">
+          <!-- Left: Recommended Auto Charts -->
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+              <h3 style="font-size:18px; font-weight:700;">📈 Automatic Interactive Visualizations</h3>
+              <a href="visualization.html" class="btn btn-sm btn-secondary">Custom Builder ➔</a>
+            </div>
+            <div id="dashboard-charts-grid" class="chart-grid-container">
+              <p style="color:var(--text-muted)">Loading automated chart recommendations...</p>
+            </div>
+          </div>
+
+          <!-- Right: Data Quality Score & Key Insights Feed -->
+          <div style="display:flex; flex-direction:column; gap:24px;">
+            <!-- Quality Score Gauge -->
+            <div class="card quality-card">
+              <h4 style="font-size:14px; color:var(--text-muted); text-transform:uppercase;">Data Quality Index</h4>
+              <div class="quality-score-circle" id="quality-score-circle">
+                <div class="quality-score-inner">
+                  <div class="quality-num" id="quality-score-num">0</div>
+                  <div class="quality-label">/ 100</div>
+                </div>
+              </div>
+              <div id="quality-score-label" style="font-weight:700; color:var(--accent-secondary); font-size:15px;">Calculating...</div>
+            </div>
+
+            <!-- AI Insights Feed -->
+            <div class="card">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 style="font-size:16px; font-weight:700;">💡 Key Statistical Insights</h3>
+                <a href="insights.html" class="btn btn-sm btn-secondary">All Insights ➔</a>
+              </div>
+              <div id="dashboard-insights-feed" class="insights-list">
+                <p style="color:var(--text-muted)">Generating AI insights...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/upload.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/chatbot.js"></script>
+  <script>
+    async function quickGeneratePdf() {
+      const datasetId = APIClient.getActiveDatasetId();
+      if (!datasetId) {
+        APIClient.showToast("Please select or upload a dataset first.", "error");
+        return;
+      }
+      APIClient.showToast("Generating PDF Report...", "info");
+      try {
+        const res = await APIClient.request("/api/reports/generate", {
+          method: "POST",
+          body: JSON.stringify({ datasetId })
+        });
+        window.open(res.downloadUrl, "_blank");
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>

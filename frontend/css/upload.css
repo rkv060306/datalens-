@@ -1,0 +1,78 @@
+/* Upload Section & Drag Drop Zone */
+.upload-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.drop-zone {
+  border: 2px dashed var(--accent-primary);
+  border-radius: var(--radius-lg);
+  padding: 50px 30px;
+  text-align: center;
+  background: rgba(99, 102, 241, 0.04);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+  background: rgba(99, 102, 241, 0.12);
+  border-color: var(--accent-primary-hover);
+  transform: scale(1.01);
+}
+
+.drop-icon {
+  font-size: 54px;
+  color: var(--accent-primary);
+  margin-bottom: 16px;
+}
+
+.drop-zone h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.drop-zone p {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.sample-section {
+  margin-top: 40px;
+}
+
+.sample-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.sample-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sample-card:hover {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+  background: var(--bg-card-hover);
+}
+
+.sample-icon {
+  font-size: 24px;
+  color: var(--accent-secondary);
+}
+
+.sample-title {
+  font-weight: 700;
+  font-size: 15px;
+}

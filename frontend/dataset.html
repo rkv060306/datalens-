@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Preview & Cleaning — DataLens</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/visualization.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="brand-logo">🔍 DataLens</a>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="index.html"><span>📊</span> Overview & Dashboard</a></li>
+        <li><a href="upload.html"><span>📁</span> Upload Dataset</a></li>
+        <li><a href="dataset.html" class="active"><span>📋</span> Spreadsheet Preview</a></li>
+        <li><a href="visualization.html"><span>📈</span> Chart Builder</a></li>
+        <li><a href="insights.html"><span>💡</span> AI Insights & ML</a></li>
+        <li><a href="chatbot.html"><span>💬</span> AI Data Chatbot</a></li>
+        <li><a href="reports.html"><span>📄</span> Reports & Export</a></li>
+        <li><a href="history.html"><span>🕒</span> Dataset History</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="user-badge">
+          <span id="user-name-badge">Guest Analyst</span>
+          <span style="font-size:10px; background:var(--accent-secondary); color:#000; padding:2px 6px; border-radius:4px;">FREE</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="top-header">
+        <div class="header-title"><h2 id="dataset-title">Spreadsheet Data Preview</h2></div>
+        <div class="header-actions">
+          <button id="btn-open-clean-modal" class="btn btn-primary btn-sm">✨ Clean Dataset</button>
+        </div>
+      </header>
+
+      <main class="content-body">
+        <div class="card" style="margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <label for="table-search-input" style="font-size:13px; font-weight:600; color:var(--text-muted);">Search:</label>
+              <input type="text" id="table-search-input" class="form-control" placeholder="Search rows..." style="width:240px;">
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span id="page-info-span" style="font-size:13px; color:var(--text-muted);">Loading pages...</span>
+              <button id="btn-prev-page" class="btn btn-secondary btn-sm">◀ Previous</button>
+              <button id="btn-next-page" class="btn btn-secondary btn-sm">Next ▶</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead id="data-table-head"></thead>
+            <tbody id="data-table-body">
+              <tr><td>Loading table data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Data Cleaning Modal -->
+  <div class="modal-overlay" id="cleaning-modal">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h3 style="font-size:18px; font-weight:700;">✨ Data Cleaning & Preprocessing Suite</h3>
+        <button onclick="closeCleanModal()" class="btn btn-sm btn-secondary">✖</button>
+      </div>
+
+      <div class="form-group">
+        <label>Missing Values Strategy:</label>
+        <select id="clean-missing-strategy" class="form-control">
+          <option value="mean">Fill Missing with Column Mean</option>
+          <option value="median">Fill Missing with Column Median</option>
+          <option value="mode">Fill Missing with Column Mode</option>
+          <option value="remove_rows">Drop Rows with Missing Values</option>
+        </select>
+      </div>
+
+      <div class="form-group" style="display:flex; align-items:center; gap:10px; margin-top:16px;">
+        <input type="checkbox" id="clean-remove-duplicates" style="width:18px; height:18px;">
+        <label for="clean-remove-duplicates" style="margin:0; cursor:pointer;">Remove Duplicate Rows</label>
+      </div>
+
+      <p style="font-size:12px; color:var(--text-muted); margin-top:12px;">Note: Cleaning creates a new copy of your dataset without modifying your original raw upload.</p>
+
+      <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+        <button onclick="closeCleanModal()" class="btn btn-secondary">Cancel</button>
+        <button id="btn-apply-cleaning" class="btn btn-primary">Apply & Create Cleaned Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/dataset.js"></script>
+  <script src="js/chatbot.js"></script>
+</body>
+</html>

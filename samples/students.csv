@@ -1,0 +1,16 @@
+Student_ID,Gender,Department,Study_Hours_Per_Week,Attendance_Percentage,Previous_GPA,Exam_Score,Passed
+STU-001,Female,Computer Science,24,92.5,3.85,94.0,1
+STU-002,Male,Electrical,14,78.0,2.90,68.5,1
+STU-003,Female,Mechanical,8,65.0,2.40,52.0,0
+STU-004,Male,Computer Science,30,96.0,3.95,98.0,1
+STU-005,Female,Civil,18,85.5,3.20,77.5,1
+STU-006,Male,Computer Science,10,70.0,2.60,60.0,0
+STU-007,Female,Electrical,22,90.0,3.65,88.0,1
+STU-008,Male,Mechanical,26,94.0,3.75,91.5,1
+STU-009,Female,Civil,12,68.0,2.50,55.0,0
+STU-010,Male,Computer Science,28,95.0,3.90,95.5,1
+STU-011,Female,Electrical,16,81.0,3.10,73.0,1
+STU-012,Male,Mechanical,9,60.0,2.20,48.0,0
+STU-013,Female,Computer Science,21,89.0,3.50,84.5,1
+STU-014,Male,Civil,19,84.0,3.30,79.0,1
+STU-015,Female,Electrical,25,93.0,3.80,92.0,1

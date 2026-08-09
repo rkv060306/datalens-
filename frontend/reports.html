@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports & Export — DataLens</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/chatbot.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <script src="js/theme.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="brand-logo">🔍 DataLens</a>
+      </div>
+      <ul class="sidebar-menu">
+        <li><a href="index.html"><span>📊</span> Overview & Dashboard</a></li>
+        <li><a href="upload.html"><span>📁</span> Upload Dataset</a></li>
+        <li><a href="dataset.html"><span>📋</span> Spreadsheet Preview</a></li>
+        <li><a href="visualization.html"><span>📈</span> Chart Builder</a></li>
+        <li><a href="insights.html"><span>💡</span> AI Insights & ML</a></li>
+        <li><a href="chatbot.html"><span>💬</span> AI Data Chatbot</a></li>
+        <li><a href="reports.html" class="active"><span>📄</span> Reports & Export</a></li>
+        <li><a href="history.html"><span>🕒</span> Dataset History</a></li>
+      </ul>
+      <div class="sidebar-footer">
+        <div class="user-badge">
+          <span id="user-name-badge">Guest Analyst</span>
+          <span style="font-size:10px; background:var(--accent-secondary); color:#000; padding:2px 6px; border-radius:4px;">FREE</span>
+        </div>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="top-header">
+        <div class="header-title"><h2>Generate Reports & Export Data</h2></div>
+        <div class="header-actions">
+          <a href="dashboard.html" class="btn btn-secondary btn-sm">⬅ Dashboard</a>
+        </div>
+      </header>
+
+      <main class="content-body">
+        <div class="card" style="max-width:800px; margin:0 auto;">
+          <h2 style="font-size:22px; font-weight:800; margin-bottom:8px;">📄 Automated PDF Analytics Report Generator</h2>
+          <p style="color:var(--text-muted); font-size:14px; margin-bottom:20px;">
+            Compile an executive PDF report containing your dataset overview, Data Quality rating, numeric summary statistics, correlation findings, and calculated AI insights.
+          </p>
+
+          <button id="btn-generate-pdf-report" class="btn btn-primary btn-lg" style="padding:14px 28px; font-size:16px;">
+            ⚡ Generate Official PDF Report
+          </button>
+
+          <div id="pdf-download-container"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/reports.js"></script>
+  <script src="js/chatbot.js"></script>
+</body>
+</html>

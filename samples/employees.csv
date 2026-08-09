@@ -1,0 +1,11 @@
+Emp_ID,Name,Department,Age,Salary,Experience_Years,Performance_Score,Attrition_Risk
+EMP-101,Alex Morgan,Engineering,29,95000,5,4.5,Low
+EMP-102,Brenda Chen,Marketing,34,78000,7,4.2,Medium
+EMP-103,Charles Davis,Sales,42,110000,12,4.8,Low
+EMP-104,Diana Evans,Human Resources,26,58000,2,3.8,High
+EMP-105,Ethan Foster,Engineering,38,125000,10,4.9,Low
+EMP-106,Fiona Green,Sales,31,85000,6,4.0,Medium
+EMP-107,George Harris,Engineering,24,68000,1,3.5,High
+EMP-108,Hannah Ivers,Marketing,45,102000,15,4.7,Low
+EMP-109,Ian Jackson,Human Resources,33,72000,5,4.1,Low
+EMP-110,Julia King,Sales,28,79000,4,4.3,Medium
