@@ -38,25 +38,47 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function handleFileUpload(file) {
-  const formData = new FormData();
-  formData.append("file", file);
+  APIClient.showToast(`Analyzing ${file.name}...`, "info");
 
-  APIClient.showToast(`Uploading ${file.name}...`, "info");
+  // Read file client-side for GitHub Pages or static mode
+  const reader = new FileReader();
+  reader.onload = async (event) => {
+    const text = event.target.result;
+    if (text) {
+      const customMeta = APIClient.registerClientSideDataset(file.name, text);
+      if (customMeta) {
+        APIClient.setActiveDatasetId(customMeta.id);
+        APIClient.showToast(`Custom dataset '${file.name}' loaded & profiled!`, "success");
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 600);
+        return;
+      }
+    }
+    
+    // Fallback attempt to server backend if present
+    const formData = new FormData();
+    formData.append("file", file);
+    try {
+      const res = await APIClient.request("/api/datasets/upload", {
+        method: "POST",
+        body: formData
+      });
+      APIClient.setActiveDatasetId(res.id);
+      APIClient.showToast("Dataset uploaded and profiled successfully!", "success");
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 600);
+    } catch (err) {
+      console.error("Upload error", err);
+    }
+  };
 
-  try {
-    const res = await APIClient.request("/api/datasets/upload", {
-      method: "POST",
-      body: formData
-    });
+  reader.onerror = () => {
+    APIClient.showToast("Failed to read selected file.", "error");
+  };
 
-    APIClient.setActiveDatasetId(res.id);
-    APIClient.showToast("Dataset uploaded and profiled successfully!", "success");
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 800);
-  } catch (err) {
-    console.error("Upload error", err);
-  }
+  reader.readAsText(file);
 }
 
 async function loadSampleDatasets(container) {
