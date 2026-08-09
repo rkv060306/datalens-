@@ -1,6 +1,16 @@
-// DataLens Unified API Client with Instant Guest Auth Fallback
+// DataLens Unified API Client with Dynamic Backend Host Resolution
 
-const API_BASE = ""; // Relative path to current server host
+function getApiBase() {
+  const customUrl = localStorage.getItem("datalens_backend_url");
+  if (customUrl && customUrl.trim()) {
+    return customUrl.trim().replace(/\/$/, "");
+  }
+  // If hosted on GitHub Pages and no custom backend set
+  if (window.location.hostname.includes("github.io")) {
+    return "";
+  }
+  return ""; // Relative path when served directly by FastAPI
+}
 
 class APIClient {
   static getAuthToken() {
@@ -19,11 +29,20 @@ class APIClient {
     localStorage.setItem("datalens_active_dataset_id", id);
   }
 
+  static getBackendUrl() {
+    return getApiBase();
+  }
+
+  static setBackendUrl(url) {
+    localStorage.setItem("datalens_backend_url", url);
+  }
+
   static async ensureToken() {
     let token = this.getAuthToken();
     if (!token) {
       try {
-        const res = await fetch(`${API_BASE}/api/auth/guest-token`);
+        const apiBase = getApiBase();
+        const res = await fetch(`${apiBase}/api/auth/guest-token`);
         if (res.ok) {
           const data = await res.json();
           this.setAuthToken(data.access_token);
@@ -31,13 +50,20 @@ class APIClient {
           token = data.access_token;
         }
       } catch (err) {
-        console.error("Failed to get guest token", err);
+        console.warn("Could not reach backend guest token endpoint", err);
       }
     }
     return token;
   }
 
   static async request(endpoint, options = {}) {
+    const apiBase = getApiBase();
+
+    // Check if on GitHub Pages without configured backend URL
+    if (window.location.hostname.includes("github.io") && !localStorage.getItem("datalens_backend_url")) {
+      console.warn("Running static GitHub Pages build. Backend Python API is not attached to static GitHub Pages.");
+    }
+
     const token = await this.ensureToken();
 
     const headers = {
@@ -53,17 +79,16 @@ class APIClient {
     }
 
     try {
-      const response = await fetch(`${API_BASE}${endpoint}`, {
+      const response = await fetch(`${apiBase}${endpoint}`, {
         ...options,
         headers,
       });
 
       if (response.status === 401) {
-        // Token expired or invalid -> refresh guest token
         localStorage.removeItem("datalens_token");
         const newToken = await this.ensureToken();
         headers["Authorization"] = `Bearer ${newToken}`;
-        const retryRes = await fetch(`${API_BASE}${endpoint}`, { ...options, headers });
+        const retryRes = await fetch(`${apiBase}${endpoint}`, { ...options, headers });
         if (!retryRes.ok) {
           const errData = await retryRes.json().catch(() => ({}));
           throw new Error(errData.detail || "API request failed");
@@ -78,7 +103,11 @@ class APIClient {
 
       return await response.json();
     } catch (error) {
-      APIClient.showToast(error.message || "Network Request Failed", "error");
+      if (window.location.hostname.includes("github.io") && !localStorage.getItem("datalens_backend_url")) {
+        APIClient.showToast("GitHub Pages only hosts static files. Deploy Python backend on Render/Railway to enable API endpoints.", "error");
+      } else {
+        APIClient.showToast(error.message || "Network Request Failed", "error");
+      }
       throw error;
     }
   }
