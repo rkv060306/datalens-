@@ -19,14 +19,16 @@ async function loadDatasetHistory() {
     datasets.forEach(ds => {
       const tr = document.createElement("tr");
       const isCurrent = (ds.id === APIClient.getActiveDatasetId());
-      
+      const dateStr = ds.createdAt || ds.uploadedAt ? new Date(ds.createdAt || ds.uploadedAt).toLocaleDateString() : "Just now";
+      const qScore = ds.qualityScore || 95;
+
       tr.innerHTML = `
         <td><strong>${ds.name}</strong> ${isCurrent ? '<span class="btn btn-sm btn-primary">Active</span>' : ''}</td>
-        <td>${ds.fileCategory.toUpperCase()} (${ds.fileType.toUpperCase()})</td>
-        <td>${ds.rows.toLocaleString()}</td>
-        <td>${ds.columns}</td>
-        <td><strong style="color:${ds.qualityScore >= 80 ? 'var(--accent-secondary)' : 'var(--accent-warning)'}">${ds.qualityScore}/100</strong></td>
-        <td>${new Date(ds.createdAt).toLocaleDateString()}</td>
+        <td>${(ds.fileCategory || 'tabular').toUpperCase()} (${(ds.fileType || 'csv').toUpperCase()})</td>
+        <td>${(ds.rows || 0).toLocaleString()}</td>
+        <td>${ds.columns || 0}</td>
+        <td><strong style="color:${qScore >= 80 ? 'var(--accent-secondary)' : 'var(--accent-warning)'}">${qScore}/100</strong></td>
+        <td>${dateStr}</td>
         <td>
           <button class="btn btn-sm btn-secondary" onclick="setActiveAndNavigate('${ds.id}')">Analyze</button>
           <button class="btn btn-sm btn-danger" onclick="confirmDeleteDataset('${ds.id}', '${ds.name}')">Delete</button>

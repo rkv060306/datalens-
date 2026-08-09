@@ -19,7 +19,9 @@ const GITHUB_PAGES_MOCK_DATASETS = [
     rows: 50,
     columns: 9,
     sizeMB: 0.05,
+    qualityScore: 98.5,
     uploadedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
     headers: ["Transaction_ID", "Date", "Customer_ID", "Product_Category", "Region", "Revenue", "Units_Sold", "Discount_Percent", "Profit"],
     numericCols: ["Revenue", "Units_Sold", "Discount_Percent", "Profit"],
     categoricalCols: ["Transaction_ID", "Date", "Customer_ID", "Product_Category", "Region"],
@@ -40,7 +42,9 @@ const GITHUB_PAGES_MOCK_DATASETS = [
     rows: 40,
     columns: 8,
     sizeMB: 0.04,
+    qualityScore: 95.0,
     uploadedAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
     headers: ["Employee_ID", "Full_Name", "Department", "Role", "Salary", "Experience_Years", "Performance_Rating", "Join_Date"],
     numericCols: ["Salary", "Experience_Years", "Performance_Rating"],
     categoricalCols: ["Employee_ID", "Full_Name", "Department", "Role", "Join_Date"],
@@ -136,6 +140,7 @@ class APIClient {
     });
 
     const dsId = "custom-ds-" + Date.now();
+    const nowIso = new Date().toISOString();
     const dsMeta = {
       id: dsId,
       name: filename,
@@ -145,7 +150,8 @@ class APIClient {
       rows: totalRows,
       columns: totalCols,
       sizeMB: Math.round((textContent.length / (1024 * 1024)) * 100) / 100 || 0.01,
-      uploadedAt: new Date().toISOString(),
+      uploadedAt: nowIso,
+      createdAt: nowIso,
       headers: headers,
       records: records,
       sampleRows: dataRows.slice(0, 10),
@@ -193,8 +199,24 @@ class APIClient {
     }
   }
 
-  static async handleClientSideFallback(endpoint, options) {
+  static async handleClientSideFallback(endpoint, options = {}) {
     console.log(`[DataLens Client Engine] Endpoint: ${endpoint}`);
+
+    // DELETE /api/datasets/{id}
+    if (options.method === "DELETE" && endpoint.includes("/api/datasets/")) {
+      const match = endpoint.match(/\/api\/datasets\/([^\/\?]+)/);
+      if (match && match[1]) {
+        const deleteId = match[1];
+        let custom = JSON.parse(localStorage.getItem("datalens_custom_datasets") || "[]");
+        custom = custom.filter(d => d.id !== deleteId);
+        localStorage.setItem("datalens_custom_datasets", JSON.stringify(custom));
+        if (APIClient.getActiveDatasetId() === deleteId) {
+          const remaining = APIClient.getClientSideDatasets();
+          if (remaining.length > 0) APIClient.setActiveDatasetId(remaining[0].id);
+        }
+      }
+      return { message: "Dataset deleted successfully" };
+    }
 
     const customDatasets = APIClient.getClientSideDatasets();
     let activeId = APIClient.getActiveDatasetId();
