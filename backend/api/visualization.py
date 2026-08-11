@@ -14,7 +14,12 @@ class CustomChartRequest(BaseModel):
     xAxis: Optional[str] = None
     yAxis: Optional[str] = None
     color: Optional[str] = None
+    size: Optional[str] = None
     aggregation: Optional[str] = "none"
+    palette: Optional[str] = "indigo"
+    showLabels: Optional[bool] = False
+    smoothLines: Optional[bool] = False
+    orientation: Optional[str] = "v"
 
 @router.get("/{dataset_id}/recommendations")
 async def get_chart_recommendations(dataset_id: str, user: dict = Depends(get_current_user_payload)):
@@ -48,5 +53,10 @@ async def generate_custom_visualization(
         x_axis=req.xAxis,
         y_axis=req.yAxis,
         color_col=req.color,
-        aggregation=req.aggregation or "none"
+        size_col=req.size,
+        aggregation=req.aggregation or "none",
+        palette=req.palette or "indigo",
+        show_labels=req.showLabels or False,
+        smooth_lines=req.smoothLines or False,
+        orientation=req.orientation or "v"
     )

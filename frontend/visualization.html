@@ -46,19 +46,63 @@
       <main class="content-body">
         <!-- Interactive Chart Builder Section -->
         <div class="card" style="margin-bottom:30px;">
-          <h3 style="font-size:18px; font-weight:700; margin-bottom:16px;">🎨 Custom Chart Builder</h3>
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+            <div>
+              <h3 style="font-size:20px; font-weight:700;">🎨 Custom Chart Builder</h3>
+              <p style="color:var(--text-muted); font-size:13px; margin-top:2px;">Select from 17 chart types, apply color grouping, bubble scaling, and dynamic aggregations.</p>
+            </div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <label style="font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="builder-auto-update" checked> Auto-refresh canvas
+              </label>
+              <button id="btn-download-chart" class="btn btn-secondary btn-sm">📷 Save PNG</button>
+              <button id="btn-expand-chart" class="btn btn-secondary btn-sm">🔍 Fullscreen</button>
+            </div>
+          </div>
+
+          <!-- Visual Chart Type Pills Grid -->
+          <div class="chart-type-picker-grid" id="chart-type-picker">
+            <button class="chart-pill active" data-type="bar"><span>📊</span> Bar</button>
+            <button class="chart-pill" data-type="horizontal_bar"><span>📶</span> Horiz Bar</button>
+            <button class="chart-pill" data-type="stacked_bar"><span>🥞</span> Stacked Bar</button>
+            <button class="chart-pill" data-type="line"><span>📈</span> Line</button>
+            <button class="chart-pill" data-type="area"><span>🌊</span> Area</button>
+            <button class="chart-pill" data-type="pie"><span>🥧</span> Pie</button>
+            <button class="chart-pill" data-type="doughnut"><span>🍩</span> Donut</button>
+            <button class="chart-pill" data-type="scatter"><span>📍</span> Scatter</button>
+            <button class="chart-pill" data-type="bubble"><span>🫧</span> Bubble</button>
+            <button class="chart-pill" data-type="histogram"><span>📊</span> Histogram</button>
+            <button class="chart-pill" data-type="box"><span>📦</span> Box Plot</button>
+            <button class="chart-pill" data-type="violin"><span>🎻</span> Violin</button>
+            <button class="chart-pill" data-type="heatmap"><span>🔥</span> Heatmap</button>
+            <button class="chart-pill" data-type="radar"><span>🎯</span> Radar</button>
+            <button class="chart-pill" data-type="treemap"><span>🌲</span> Treemap</button>
+            <button class="chart-pill" data-type="waterfall"><span>🕯️</span> Waterfall</button>
+            <button class="chart-pill" data-type="scatter3d"><span>🌐</span> 3D Scatter</button>
+          </div>
+
           <div class="chart-builder-panel">
             <div class="builder-controls">
               <div class="form-group">
-                <label>Chart Type:</label>
+                <label>Chart Type Preset:</label>
                 <select id="builder-chart-type" class="form-control">
-                  <option value="bar">Bar Chart</option>
-                  <option value="line">Line Chart</option>
-                  <option value="scatter">Scatter Plot</option>
-                  <option value="histogram">Histogram</option>
-                  <option value="box">Box Plot</option>
-                  <option value="pie">Pie / Donut Chart</option>
-                  <option value="area">Area Chart</option>
+                  <option value="bar">📊 Bar Chart</option>
+                  <option value="horizontal_bar">📶 Horizontal Bar</option>
+                  <option value="stacked_bar">🥞 Stacked Bar Chart</option>
+                  <option value="line">📈 Line Chart</option>
+                  <option value="area">🌊 Area Chart</option>
+                  <option value="pie">🥧 Pie Chart</option>
+                  <option value="doughnut">🍩 Donut / Ring Chart</option>
+                  <option value="scatter">📍 2D Scatter Plot</option>
+                  <option value="bubble">🫧 Bubble Chart</option>
+                  <option value="histogram">📊 Histogram Distribution</option>
+                  <option value="box">📦 Box Plot</option>
+                  <option value="violin">🎻 Violin Density Plot</option>
+                  <option value="heatmap">🔥 Heatmap Matrix</option>
+                  <option value="radar">🎯 Radar / Spider Chart</option>
+                  <option value="treemap">🌲 Treemap Hierarchy</option>
+                  <option value="waterfall">🕯️ Waterfall Chart</option>
+                  <option value="scatter3d">🌐 3D Spatial Scatter</option>
                 </select>
               </div>
 
@@ -73,22 +117,54 @@
               </div>
 
               <div class="form-group">
+                <label>Group / Color By Column:</label>
+                <select id="builder-color-axis" class="form-control"></select>
+              </div>
+
+              <div class="form-group">
+                <label>Size / 3D Z Axis Column:</label>
+                <select id="builder-size-axis" class="form-control"></select>
+              </div>
+
+              <div class="form-group">
                 <label>Aggregation Method:</label>
                 <select id="builder-aggregation" class="form-control">
                   <option value="none">None (Raw Points)</option>
                   <option value="mean">Mean (Average)</option>
-                  <option value="sum">Sum</option>
-                  <option value="count">Count</option>
-                  <option value="min">Minimum</option>
-                  <option value="max">Maximum</option>
+                  <option value="sum">Sum Total</option>
+                  <option value="count">Count Frequency</option>
+                  <option value="min">Minimum Value</option>
+                  <option value="max">Maximum Value</option>
+                  <option value="median">Median Value</option>
                 </select>
               </div>
 
-              <button id="btn-generate-custom-chart" class="btn btn-primary">⚡ Update Chart Canvas</button>
+              <div class="form-group">
+                <label>Color Theme Palette:</label>
+                <select id="builder-palette" class="form-control">
+                  <option value="indigo">💜 Indigo & Violet (Default)</option>
+                  <option value="emerald">🟢 Emerald & Mint</option>
+                  <option value="neon">⚡ Neon & Cyberpunk</option>
+                  <option value="sunset">🌅 Sunset & Coral</option>
+                  <option value="viridis">🌌 Viridis Spectral</option>
+                  <option value="coral">🎨 Warm Coral & Teal</option>
+                </select>
+              </div>
+
+              <div class="builder-toggles" style="display:flex; flex-direction:column; gap:8px;">
+                <label style="font-size:13px; color:var(--text-color); display:flex; align-items:center; gap:8px; cursor:pointer;">
+                  <input type="checkbox" id="builder-show-labels"> Show Value Labels
+                </label>
+                <label style="font-size:13px; color:var(--text-color); display:flex; align-items:center; gap:8px; cursor:pointer;">
+                  <input type="checkbox" id="builder-smooth-lines" checked> Smooth Line Splines
+                </label>
+              </div>
+
+              <button id="btn-generate-custom-chart" class="btn btn-primary" style="margin-top:8px;">⚡ Update Chart Canvas</button>
             </div>
 
             <div class="plotly-canvas-wrapper">
-              <div id="custom-chart-canvas" style="width:100%; height:440px;"></div>
+              <div id="custom-chart-canvas" style="width:100%; height:500px;"></div>
             </div>
           </div>
         </div>
